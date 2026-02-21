@@ -1,5 +1,6 @@
 package br.com.will.classes.saga.order.dto
 
+import java.math.BigDecimal
 import java.time.Instant
 
 data class ProductDTO(
@@ -10,7 +11,7 @@ data class ProductDTO(
 data class OrderItemDTO(
     val id: String,
     val quantity: Int,
-    val price: Double,
+    val price: BigDecimal,
     val product: ProductDTO
 )
 
@@ -25,6 +26,6 @@ data class OrderDTO(
     val createdAt: Instant,
     val items: List<OrderItemDTO>,
     val customer: CustomerDTO,
-    val status: String
+    val status: String,
+    val total: BigDecimal = BigDecimal.ZERO
 )
-

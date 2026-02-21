@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm")
     kotlin("plugin.spring")
@@ -28,21 +30,13 @@ dependencies {
     
     implementation("org.postgresql:postgresql")
     implementation("com.zaxxer:HikariCP")
-    
-    implementation("org.springframework.kafka:spring-kafka")
-    
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-    
-    // replace generic messaging with specific SQS and SNS modules
+
     implementation("io.awspring.cloud:spring-cloud-aws-sqs:3.4.2")
     implementation("io.awspring.cloud:spring-cloud-aws-sns:3.4.2")
-    implementation("software.amazon.awssdk:sqs:2.20.0")
-    implementation("software.amazon.awssdk:sns:2.20.0")
+    implementation("io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.kafka:spring-kafka-test")
-    testImplementation("com.h2database:h2")
 }
 
 tasks.test {
@@ -54,4 +48,8 @@ allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.Embeddable")
     annotation("jakarta.persistence.MappedSuperclass")
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.compilerOptions {
+    freeCompilerArgs.set(listOf("-Xannotation-default-target=param-property"))
 }
