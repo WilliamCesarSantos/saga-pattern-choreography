@@ -1,7 +1,8 @@
 package br.com.will.classes.saga.payment.infra.listener
 
-import br.com.will.classes.saga.payment.dto.OrderDTO
+import br.com.will.classes.saga.shared.dto.OrderDTO
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -14,7 +15,7 @@ import software.amazon.awssdk.services.sns.model.PublishRequest
 
 @Component
 class PaymentPoller(private val sqsClient: SqsClient, private val snsClient: SnsClient) {
-    private val mapper = jacksonObjectMapper()
+    private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
     private val log = LoggerFactory.getLogger(javaClass)
     private val checkoutQueue = "PAYMENT_SERVICE_ORDER_CHECKOUT_QUEUE"
     private val revertQueue = "PAYMENT_SERVICE_ORDER_REVERT_QUEUE"
@@ -29,7 +30,7 @@ class PaymentPoller(private val sqsClient: SqsClient, private val snsClient: Sns
                 try {
                     val order = mapper.readValue(msg.body(), OrderDTO::class.java)
                     log.info("[Payment] Processing checkout for order=${order.orderId} status=${order.status}")
-                    val total = order.items.sumOf { it.price * it.quantity }
+                    val total = order.items.fold(java.math.BigDecimal.ZERO) { acc, item -> acc + item.price.multiply(java.math.BigDecimal(item.quantity)) }
                     val updated = if ((total.toInt() % 2) == 0) order.copy(status = "ORDER_PAID") else order.copy(status = "PAYMENT_FAILED")
                     publishOrder(updated)
                 } catch (ex: Exception) {

@@ -2,7 +2,7 @@ package br.com.will.classes.saga.order.infra.controller
 
 import br.com.will.classes.saga.order.domain.port.CheckoutOrder
 import br.com.will.classes.saga.order.domain.repository.OrderRepository
-import br.com.will.classes.saga.order.dto.OrderDTO
+import br.com.will.classes.saga.shared.dto.OrderDTO
 import br.com.will.classes.saga.order.infra.mapper.toDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

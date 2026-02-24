@@ -32,9 +32,10 @@ spring:
 server:
   port: 8080
 
-app:
-  sns:
-    topic-arn: arn:aws:sns:us-east-1:000000000000:ORDER_ACTION
+order-service:
   sqs:
-    order-status-queue: ORDER_SERVICE_STATUS_QUEUE
-
+    order-queue:
+      queue-name: ORDER_SERVICE_STATUS_QUEUE
+  sns:
+    order-action:
+      topic-arn: arn:aws:sns:us-east-1:000000000000:ORDER_ACTION

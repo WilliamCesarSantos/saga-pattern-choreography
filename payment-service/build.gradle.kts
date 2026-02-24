@@ -18,6 +18,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":shared"))
     implementation(platform("org.springframework.boot:spring-boot-dependencies:4.0.0"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -31,7 +32,8 @@ dependencies {
     implementation("io.awspring.cloud:spring-cloud-aws-sns:3.4.2")
     implementation("software.amazon.awssdk:sqs:2.20.0")
     implementation("software.amazon.awssdk:sns:2.20.0")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

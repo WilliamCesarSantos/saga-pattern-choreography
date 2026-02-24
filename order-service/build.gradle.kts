@@ -21,6 +21,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":shared"))
     implementation(platform("org.springframework.boot:spring-boot-dependencies:4.0.0"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

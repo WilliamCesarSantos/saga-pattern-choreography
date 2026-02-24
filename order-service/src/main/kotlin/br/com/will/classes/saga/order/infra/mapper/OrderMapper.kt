@@ -1,10 +1,10 @@
 package br.com.will.classes.saga.order.infra.mapper
 
 import br.com.will.classes.saga.order.domain.model.Order
-import br.com.will.classes.saga.order.dto.CustomerDTO
-import br.com.will.classes.saga.order.dto.OrderDTO
-import br.com.will.classes.saga.order.dto.OrderItemDTO
-import br.com.will.classes.saga.order.dto.ProductDTO
+import br.com.will.classes.saga.shared.dto.CustomerDTO
+import br.com.will.classes.saga.shared.dto.OrderDTO
+import br.com.will.classes.saga.shared.dto.OrderItemDTO
+import br.com.will.classes.saga.shared.dto.ProductDTO
 import java.time.Instant
 
 object OrderMapper {

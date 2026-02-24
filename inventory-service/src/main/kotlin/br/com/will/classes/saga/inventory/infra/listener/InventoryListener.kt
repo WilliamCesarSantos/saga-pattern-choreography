@@ -1,17 +1,18 @@
 package br.com.will.classes.saga.inventory.infra.listener
 
-import br.com.will.classes.saga.inventory.dto.OrderDTO
+import br.com.will.classes.saga.shared.dto.OrderDTO
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import io.awspring.cloud.messaging.listener.annotation.SqsListener
+import io.awspring.cloud.sqs.annotation.SqsListener
 import software.amazon.awssdk.services.sns.SnsClient
 import software.amazon.awssdk.services.sns.model.MessageAttributeValue
 import software.amazon.awssdk.services.sns.model.PublishRequest
 
 @Component
 class InventoryListener(private val snsClient: SnsClient) {
-    private val mapper = jacksonObjectMapper()
+    private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
     private val log = LoggerFactory.getLogger(javaClass)
     private val topicArn = System.getenv("ORDER_ACTION_TOPIC_ARN") ?: "arn:aws:sns:us-east-1:000000000000:ORDER_ACTION"
 

@@ -15,6 +15,7 @@ pluginManagement {
 rootProject.name = "saga-pattern-choreography"
 
 include(
+    "shared",
     "order-service",
     "payment-service",
     "inventory-service",
