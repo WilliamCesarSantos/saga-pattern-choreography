@@ -1,5 +1,6 @@
 package br.com.will.classes.saga.order.usecases
 
+import br.com.will.classes.saga.order.domain.exception.EmptyOrderException
 import br.com.will.classes.saga.order.domain.exception.OrderNotFound
 import br.com.will.classes.saga.order.domain.model.Order
 import br.com.will.classes.saga.order.domain.port.CheckoutOrder
@@ -18,6 +19,10 @@ class CheckoutOrderUseCase(
     override fun execute(orderId: String): Order {
         val order = orderRepository.findById(orderId)
             .orElseThrow { OrderNotFound("Order $orderId not found") }
+
+        if (order.items.isEmpty()) {
+            throw EmptyOrderException("Order $orderId must have at least one item to checkout")
+        }
 
         order.status = "ORDER_CHECKOUT"
         orderRepository.save(order)

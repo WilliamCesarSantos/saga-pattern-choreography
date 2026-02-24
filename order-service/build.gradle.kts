@@ -35,7 +35,6 @@ dependencies {
     implementation("io.awspring.cloud:spring-cloud-aws-sqs:3.4.2")
     implementation("io.awspring.cloud:spring-cloud-aws-sns:3.4.2")
     implementation("io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.2")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

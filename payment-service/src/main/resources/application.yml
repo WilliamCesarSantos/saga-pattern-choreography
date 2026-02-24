@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payment_db
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+cloud:
+  aws:
+    region:
+      static: us-east-1
+    credentials:
+      access-key: test
+      secret-key: test
+
+aws:
+  endpoint: http://localstack:4566
+
+payment-service:
+  sqs:
+    order-checkout:
+      queue-name: PAYMENT_SERVICE_ORDER_CHECKOUT_QUEUE
+    order-revert:
+      queue-name: PAYMENT_SERVICE_ORDER_REVERT_QUEUE
+  sns:
+    order-status:
+      topic-arn: arn:aws:sns:us-east-1:000000000000:ORDER_ACTION
