@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: inventory-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/inventory_db
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+inventory-service:
+  sqs:
+    write-off:
+      queue-name: INVENTORY_SERVICE_WRITE_OFF
+  sns:
+    order-action:
+      topic-arn: arn:aws:sns:us-east-1:000000000000:ORDER_ACTION
+
+cloud:
+  aws:
+    endpoint: http://localhost:4566
+    region:
+      static: us-east-1
+    credentials:
+      access-key: test
+      secret-key: test
+

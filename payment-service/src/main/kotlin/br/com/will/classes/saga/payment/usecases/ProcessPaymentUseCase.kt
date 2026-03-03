@@ -27,6 +27,7 @@ class ProcessPaymentUseCase(
         val transactionId = UUID.randomUUID().toString()
         val amount = orderDTO.total
 
+        // TODO use case should use model, never use adapter entity.
         val entity = PaymentEntity(
             orderId = orderDTO.orderId,
             status = "ORDER_PAID",

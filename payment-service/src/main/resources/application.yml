@@ -22,8 +22,8 @@ payment-service:
   sqs:
     order-checkout:
       queue-name: PAYMENT_SERVICE_ORDER_CHECKOUT_QUEUE
-    order-revert:
-      queue-name: PAYMENT_SERVICE_ORDER_REVERT_QUEUE
+    payment-revert:
+      queue-name: PAYMENT_SERVICE_PAYMENT_REVERT_QUEUE
   sns:
-    order-status:
+    order-action:
       topic-arn: arn:aws:sns:us-east-1:000000000000:ORDER_ACTION

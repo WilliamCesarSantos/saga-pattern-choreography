@@ -25,7 +25,7 @@ class PaymentListener(
         processPayment.execute(orderDTO)
     }
 
-    @SqsListener($$"${payment-service.sqs.order-reverse.queue-name}")
+    @SqsListener($$"${payment-service.sqs.payment-revert.queue-name}")
     fun onOrderRevert(message: String) {
         log.info("[Payment] Received message from revert queue")
         val orderDTO = objectMapper.readValue(message, OrderDTO::class.java)

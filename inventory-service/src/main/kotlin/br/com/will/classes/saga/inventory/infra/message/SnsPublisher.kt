@@ -1,6 +1,6 @@
-package br.com.will.classes.saga.payment.infra.message
+package br.com.will.classes.saga.inventory.infra.message
 
-import br.com.will.classes.saga.payment.domain.port.PaymentEventPublisher
+import br.com.will.classes.saga.inventory.domain.port.InventoryEventPublisher
 import br.com.will.classes.saga.shared.dto.OrderDTO
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
@@ -14,9 +14,9 @@ import software.amazon.awssdk.services.sns.model.PublishRequest
 class SnsPublisher(
     private val snsClient: SnsClient,
     private val objectMapper: ObjectMapper,
-    @param:Value($$"${payment-service.sns.order-action.topic-arn}")
+    @param:Value($$"${inventory-service.sns.order-action.topic-arn}")
     private val topicArn: String
-) : PaymentEventPublisher {
+) : InventoryEventPublisher {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -35,7 +35,7 @@ class SnsPublisher(
             )
             .build()
         snsClient.publish(request)
-        log.info("[Payment] Published event to ORDER_ACTION — orderId=${orderDTO.orderId} status=${orderDTO.status}")
+        log.info("[Inventory] Published event to ORDER_ACTION — orderId=${orderDTO.orderId} status=${orderDTO.status}")
     }
 }
 
