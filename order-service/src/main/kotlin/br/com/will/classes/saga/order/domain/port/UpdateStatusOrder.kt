@@ -4,5 +4,5 @@ import br.com.will.classes.saga.order.domain.model.Order
 
 interface UpdateStatusOrder {
 
-    fun execute(orderId: String, newState: String): Order
+    fun execute(orderId: Long, newState: String): Order
 }

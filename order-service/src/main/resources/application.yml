@@ -23,7 +23,7 @@ spring:
   cloud:
     aws:
       region:
-        static: us-east-1
+        static: sa-east-1
       credentials:
         access-key: test
         secret-key: test
@@ -34,8 +34,8 @@ server:
 
 order-service:
   sqs:
-    order-queue:
+    order-status:
       queue-name: ORDER_SERVICE_STATUS_QUEUE
   sns:
     order-action:
-      topic-arn: arn:aws:sns:us-east-1:000000000000:ORDER_ACTION
+      topic-arn: arn:aws:sns:sa-east-1:000000000000:ORDER_ACTION

@@ -14,13 +14,13 @@ class OrderController(
     private val orderRepository: OrderRepository
 ) {
     @PostMapping("/{orderId}/checkout")
-    fun checkout(@PathVariable orderId: String): ResponseEntity<OrderDTO> {
+    fun checkout(@PathVariable orderId: Long): ResponseEntity<OrderDTO> {
         val order = checkoutOrder.execute(orderId)
         return ResponseEntity.ok(order.toDto())
     }
 
     @GetMapping("/{orderId}")
-    fun getOrder(@PathVariable orderId: String): ResponseEntity<OrderDTO> {
+    fun getOrder(@PathVariable orderId: Long): ResponseEntity<OrderDTO> {
         val order = orderRepository.findById(orderId)
             .orElseThrow { RuntimeException("Order not found") }
         return ResponseEntity.ok(order.toDto())

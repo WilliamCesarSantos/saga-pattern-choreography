@@ -15,11 +15,10 @@ class OrderServiceClient(
         .baseUrl(baseUrl)
         .build()
 
-    override fun findOrderById(orderId: String): OrderDTO? =
+    override fun findOrderById(orderId: Long): OrderDTO? =
         webClient.get()
             .uri("/orders/{orderId}", orderId)
             .retrieve()
             .bodyToMono(OrderDTO::class.java)
             .block()
 }
-

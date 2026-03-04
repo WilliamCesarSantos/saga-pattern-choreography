@@ -17,7 +17,7 @@ class UpdateOrderStatusUseCase(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Transactional
-    override fun execute(orderId: String, newState: String): Order {
+    override fun execute(orderId: Long, newState: String): Order {
         val order = orderRepository.findById(orderId)
             .orElseThrow { OrderNotFound("Order ${orderId} not found") }
 

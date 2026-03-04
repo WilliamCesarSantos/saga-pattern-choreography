@@ -14,7 +14,7 @@ class ShippingEntity(
     val id: Long? = null,
 
     @Column(name = "order_id", nullable = false)
-    val orderId: String,
+    val orderId: Long,
 
     @Column(name = "customer_name", nullable = false)
     val customerName: String,
@@ -69,4 +69,3 @@ class ShippingEntity(
         )
     }
 }
-

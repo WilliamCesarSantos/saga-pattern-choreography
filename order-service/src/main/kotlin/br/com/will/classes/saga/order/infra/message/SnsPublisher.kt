@@ -3,12 +3,12 @@ package br.com.will.classes.saga.order.infra.message
 import br.com.will.classes.saga.order.domain.model.Order
 import br.com.will.classes.saga.order.domain.port.OrderEventPublisher
 import br.com.will.classes.saga.order.infra.mapper.toDto
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.services.sns.SnsClient
 import software.amazon.awssdk.services.sns.model.MessageAttributeValue
 import software.amazon.awssdk.services.sns.model.PublishRequest
+import tools.jackson.databind.ObjectMapper
 
 @Component
 class SnsPublisher(

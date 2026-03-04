@@ -32,9 +32,9 @@ dependencies {
     implementation("org.postgresql:postgresql")
     implementation("com.zaxxer:HikariCP")
 
-    implementation("io.awspring.cloud:spring-cloud-aws-sqs:3.4.2")
-    implementation("io.awspring.cloud:spring-cloud-aws-sns:3.4.2")
-    implementation("io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.2")
+    implementation("io.awspring.cloud:spring-cloud-aws-sqs:4.0.0")
+    implementation("io.awspring.cloud:spring-cloud-aws-sns:4.0.0")
+    implementation("io.awspring.cloud:spring-cloud-aws-autoconfigure:4.0.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

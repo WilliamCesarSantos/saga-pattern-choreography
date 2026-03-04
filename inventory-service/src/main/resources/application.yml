@@ -15,13 +15,13 @@ inventory-service:
       queue-name: INVENTORY_SERVICE_WRITE_OFF
   sns:
     order-action:
-      topic-arn: arn:aws:sns:us-east-1:000000000000:ORDER_ACTION
+      topic-arn: arn:aws:sns:sa-east-1:000000000000:ORDER_ACTION
 
 cloud:
   aws:
     endpoint: http://localhost:4566
     region:
-      static: us-east-1
+        static: sa-east-1
     credentials:
       access-key: test
       secret-key: test

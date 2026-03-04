@@ -16,12 +16,16 @@ class CheckoutOrderUseCase(
 ) : CheckoutOrder {
 
     @Transactional
-    override fun execute(orderId: String): Order {
+    override fun execute(orderId: Long): Order {
         val order = orderRepository.findById(orderId)
             .orElseThrow { OrderNotFound("Order $orderId not found") }
 
         if (order.items.isEmpty()) {
             throw EmptyOrderException("Order $orderId must have at least one item to checkout")
+        }
+
+        if (order.status != "CREATED") {
+            throw IllegalStateException("Order $orderId cannot be checked out from status '${order.status}'. Only CREATED orders are allowed.")
         }
 
         order.status = "ORDER_CHECKOUT"

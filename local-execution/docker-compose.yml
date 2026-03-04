@@ -2,23 +2,26 @@ version: '3.8'
 
 services:
   localstack:
-    image: localstack/localstack:latest
-    container_name: localstack
-    environment:
-      - SERVICES=sns,sqs
-      - DEFAULT_REGION=us-east-1
-      - DATA_DIR=/tmp/localstack/data
+    image: localstack/localstack:4
+    container_name: saga-localstack
     ports:
       - "4566:4566"
-      - "4571:4571"
+    environment:
+      - SERVICES=sns,sqs
+      - DEFAULT_REGION=sa-east-1
+      - AWS_DEFAULT_REGION=sa-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
     volumes:
+      - localstack_data:/var/lib/localstack
       - ./localstack-init.sh:/etc/localstack/init/ready.d/localstack-init.sh:ro
-      - localstack_data:/tmp/localstack
+    networks:
+      - saga-pattern-choreography
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:4566/health || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: [ "CMD", "curl", "-f", "http://localhost:4566/_localstack/health" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   postgres:
     image: postgres:16-alpine
@@ -29,9 +32,15 @@ services:
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
+    networks:
+      - saga-pattern-choreography
     volumes:
       - ./create-postgres-dbs.sh:/docker-entrypoint-initdb.d/create-postgres-dbs.sh:ro
       - postgres_data:/var/lib/postgresql/data
+
+networks:
+  saga-pattern-choreography:
+    driver: bridge
 
 volumes:
   localstack_data:

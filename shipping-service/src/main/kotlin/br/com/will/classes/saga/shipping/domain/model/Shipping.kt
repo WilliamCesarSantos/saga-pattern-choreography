@@ -11,7 +11,7 @@ enum class ShippingStatus {
 
 data class Shipping(
     val id: Long? = null,
-    val orderId: String,
+    val orderId: Long,
     val customerName: String,
     val customerEmail: String,
     val trackingNumber: String = UUID.randomUUID().toString(),
@@ -21,4 +21,3 @@ data class Shipping(
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now()
 )
-

@@ -4,6 +4,6 @@ import br.com.will.classes.saga.order.domain.model.Order
 
 interface CheckoutOrder {
 
-    fun execute(orderId: String): Order
+    fun execute(orderId: Long): Order
 
 }

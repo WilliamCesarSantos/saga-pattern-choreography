@@ -2,16 +2,16 @@ package br.com.will.classes.saga.inventory.infra.entity
 
 import br.com.will.classes.saga.inventory.domain.model.Inventory
 import jakarta.persistence.*
-import java.util.UUID
 
 @Entity
 @Table(name = "inventory")
 data class InventoryEntity(
     @Id
-    val id: UUID = UUID.randomUUID(),
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = 0,
 
     @Column(name = "product_id", nullable = false, unique = true)
-    val productId: UUID,
+    val productId: Long,
 
     @Column(nullable = false)
     var quantity: Int,
@@ -35,4 +35,3 @@ data class InventoryEntity(
         )
     }
 }
-

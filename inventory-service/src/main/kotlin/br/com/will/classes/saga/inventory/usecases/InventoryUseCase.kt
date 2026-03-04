@@ -5,7 +5,6 @@ import br.com.will.classes.saga.inventory.domain.repository.InventoryRepository
 import br.com.will.classes.saga.shared.dto.OrderDTO
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
 
 @Service
 class InventoryUseCase(
@@ -15,7 +14,7 @@ class InventoryUseCase(
     @Transactional
     fun processWriteOff(orderDTO: OrderDTO) {
         orderDTO.items.forEach { item ->
-            val productId = UUID.fromString(item.product.id)
+            val productId = item.product.id
             val inventory = inventoryRepository.findByProductId(productId)
                 ?: throw OutOfStockException(productId)
 
@@ -25,11 +24,10 @@ class InventoryUseCase(
         }
 
         orderDTO.items.forEach { item ->
-            val productId = UUID.fromString(item.product.id)
+            val productId = item.product.id
             val inventory = inventoryRepository.findByProductId(productId)!!
             inventory.quantity -= item.quantity
             inventoryRepository.save(inventory)
         }
     }
 }
-

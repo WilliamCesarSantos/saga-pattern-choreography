@@ -10,17 +10,17 @@ import java.time.Instant
 object OrderMapper {
 
     fun toDto(order: Order): OrderDTO {
-        val items = order.items.map {
+        val items = order.items.map { item ->
             OrderItemDTO(
-                id = it.id,
-                quantity = it.quantity,
-                price = it.price,
-                product = ProductDTO(id = it.product.id, description = it.product.description)
+                id = item.id,
+                quantity = item.quantity,
+                price = item.price,
+                product = ProductDTO(id = item.product.id, description = item.product.description)
             )
         }
         val customerDto = order.customer?.let {
             CustomerDTO(id = it.id, name = it.name, email = it.email)
-        } ?: CustomerDTO(id = "", name = "unknown", email = "unknown")
+        } ?: CustomerDTO(id = 0L, name = "unknown", email = "unknown")
 
         return OrderDTO(
             orderId = order.id,
