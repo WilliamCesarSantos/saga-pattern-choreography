@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: notification-service
+
+notification-service:
+  sqs:
+    order:
+      queue-name: NOTIFICATION_SERVICE_ORDER
+
+cloud:
+  aws:
+    endpoint: http://localhost:4566
+    region:
+      static: us-east-1
+    credentials:
+      access-key: test
+      secret-key: test
+
+server:
+  port: 8084
+

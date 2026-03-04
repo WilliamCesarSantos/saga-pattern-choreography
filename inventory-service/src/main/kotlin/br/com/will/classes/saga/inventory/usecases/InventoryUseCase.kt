@@ -1,4 +1,4 @@
-package br.com.will.classes.saga.inventory.service
+package br.com.will.classes.saga.inventory.usecases
 
 import br.com.will.classes.saga.inventory.domain.exception.OutOfStockException
 import br.com.will.classes.saga.inventory.domain.repository.InventoryRepository
@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
-class InventoryService(
+class InventoryUseCase(
     private val inventoryRepository: InventoryRepository
 ) {
 

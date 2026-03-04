@@ -1,30 +1,30 @@
 package br.com.will.classes.saga.notification.infra.listener
 
 import br.com.will.classes.saga.shared.dto.OrderDTO
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import br.com.will.classes.saga.notification.application.usecase.NotifyCustomerUseCase
+import br.com.will.classes.saga.notification.domain.model.OrderNotification
 import io.awspring.cloud.sqs.annotation.SqsListener
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
-class NotificationListener {
-    private val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
-    private val log = LoggerFactory.getLogger(javaClass)
+class NotificationListener(
+    private val notifyCustomerUseCase: NotifyCustomerUseCase
+) {
 
-    @SqsListener("NOTIFICATION_SERVICE_ORDER_QUEUE")
-    fun onOrderEvent(message: String) {
-        val order = mapper.readValue(message, OrderDTO::class.java)
-        val customer = order.customer
-        val status = order.status
-        val msg = when (status) {
-            "ORDER_CHECKOUT" -> "Your order ${order.orderId} was checked out."
-            "ORDER_PAID" -> "Your order ${order.orderId} has been paid."
-            "OUT_OF_STOCK" -> "Your order ${order.orderId} is out of stock."
-            "ORDER_DELIVERED" -> "Your order ${order.orderId} was delivered."
-            "ORDER_NOT_DELIVERED" -> "There was a delivery problem with order ${order.orderId}."
-            else -> "Update on your order ${order.orderId}: status=$status"
-        }
-        log.info("[Notification] To=${customer.email} - $msg")
+    private val logger = LoggerFactory.getLogger(javaClass)
+
+    @SqsListener($$"${notification-service.sqs.order.queue-name}")
+    fun onMessage(orderDTO: OrderDTO) {
+        logger.info("Mensagem recebida da fila NOTIFICATION_SERVICE_ORDER: orderId=${orderDTO.orderId}, status=${orderDTO.status}")
+        notifyCustomerUseCase.execute(orderDTO.toDomain())
     }
+
+    private fun OrderDTO.toDomain() = OrderNotification(
+        orderId = this.orderId,
+        status = this.status,
+        customerName = this.customer.name,
+        customerEmail = this.customer.email
+    )
 }
+

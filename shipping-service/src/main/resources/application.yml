@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: shipping-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shipping_db
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+shipping-service:
+  sqs:
+    inventory-write-off:
+      queue-name: SHIPPING_SERVICE_INVENTORY_WRITE_OFF
+  sns:
+    order-action:
+      topic-arn: arn:aws:sns:us-east-1:000000000000:ORDER_ACTION
+  rest:
+    order-service:
+      base-url: http://localhost:8080
+
+cloud:
+  aws:
+    endpoint: http://localhost:4566
+    region:
+      static: us-east-1
+    credentials:
+      access-key: test
+      secret-key: test
+
+server:
+  port: 8083
+
