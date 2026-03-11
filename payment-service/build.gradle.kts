@@ -21,19 +21,18 @@ repositories {
 dependencies {
     implementation(project(":shared"))
 
-    implementation(platform("org.springframework.boot:spring-boot-dependencies:4.0.0"))
-
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:4.0.0"))
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
     implementation("org.postgresql:postgresql")
 
-    implementation("io.awspring.cloud:spring-cloud-aws-sqs:3.4.2")
-    implementation("io.awspring.cloud:spring-cloud-aws-sns:3.4.2")
-    implementation("io.awspring.cloud:spring-cloud-aws-autoconfigure:3.4.2")
+    implementation("io.awspring.cloud:spring-cloud-aws-sqs:4.0.0")
+    implementation("io.awspring.cloud:spring-cloud-aws-sns:4.0.0")
+    implementation("io.awspring.cloud:spring-cloud-aws-autoconfigure:4.0.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
