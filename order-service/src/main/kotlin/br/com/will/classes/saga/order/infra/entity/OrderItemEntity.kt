@@ -13,14 +13,14 @@ class OrderItemEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    val product: ProductEntity,
+    val product: ProductEntity? = null,
 
-    val quantity: Int,
-    val price: BigDecimal
+    val quantity: Int = 0,
+    val price: BigDecimal = BigDecimal.ZERO
 ) {
     fun toDomain(): OrderItem = OrderItem(
         id = id,
-        product = product.toDomain(),
+        product = product!!.toDomain(),
         quantity = quantity,
         price = price
     )

@@ -12,16 +12,16 @@ class PaymentEntity(
     val id: Long = 0,
 
     @Column(name = "order_id", nullable = false)
-    val orderId: String,
+    val orderId: Long = 0,
 
     @Column(nullable = false)
-    var status: String,
+    var status: String = "",
 
     @Column(nullable = false)
-    val amount: BigDecimal,
+    val amount: BigDecimal = BigDecimal.ZERO,
 
     @Column(name = "transaction_id", nullable = false)
-    val transactionId: String,
+    val transactionId: String = "",
 
     @Column(name = "processed_at", nullable = false)
     val processedAt: Instant = Instant.now()

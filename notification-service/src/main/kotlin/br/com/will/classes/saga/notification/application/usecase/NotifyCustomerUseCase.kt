@@ -18,7 +18,7 @@ class NotifyCustomerUseCase(
         )
     }
 
-    private fun resolveMessage(orderId: String, status: String): Pair<String, String> =
+    private fun resolveMessage(orderId: Long, status: String): Pair<String, String> =
         when (status) {
             "ORDER_CREATED" -> Pair(
                 "Pedido criado",

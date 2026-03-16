@@ -2,11 +2,11 @@ package br.com.will.classes.saga.shipping.infra.messaging
 
 import br.com.will.classes.saga.shared.dto.OrderDTO
 import br.com.will.classes.saga.shipping.domain.port.OrderActionPublisher
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sns.core.SnsTemplate
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import tools.jackson.databind.ObjectMapper
 
 @Component
 class SnsOrderActionPublisher(

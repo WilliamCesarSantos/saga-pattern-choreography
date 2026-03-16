@@ -4,9 +4,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class PaymentServiceApplication
+class PaymentApplication
 
 fun main(args: Array<String>) {
-    runApplication<PaymentServiceApplication>(*args)
+    runApplication<PaymentApplication>(*args)
 }
 

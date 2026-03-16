@@ -9,8 +9,8 @@ class CustomerEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-    val name: String,
-    val email: String
+    val name: String = "",
+    val email: String = ""
 ) {
     fun toDomain(): Customer = Customer(id = id, name = name, email = email)
 }

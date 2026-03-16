@@ -9,7 +9,7 @@ class ProductEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-    val description: String
+    val description: String = ""
 ) {
     fun toDomain(): Product = Product(id = id, description = description)
 }

@@ -14,20 +14,20 @@ class ShippingEntity(
     val id: Long? = null,
 
     @Column(name = "order_id", nullable = false)
-    val orderId: Long,
+    val orderId: Long = 0,
 
     @Column(name = "customer_name", nullable = false)
-    val customerName: String,
+    val customerName: String = "",
 
     @Column(name = "customer_email", nullable = false)
-    val customerEmail: String,
+    val customerEmail: String = "",
 
     @Column(name = "tracking_number", nullable = false, unique = true)
-    val trackingNumber: String,
+    val trackingNumber: String = "",
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    val status: ShippingStatus,
+    val status: ShippingStatus = ShippingStatus.PENDING,
 
     @Column(name = "received_by")
     val receivedBy: String? = null,

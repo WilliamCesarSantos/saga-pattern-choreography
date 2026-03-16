@@ -15,7 +15,10 @@ object OrderMapper {
                 id = item.id,
                 quantity = item.quantity,
                 price = item.price,
-                product = ProductDTO(id = item.product.id, description = item.product.description)
+                product = ProductDTO(
+                    id = item.product.id,
+                    description = item.product.description
+                )
             )
         }
         val customerDto = order.customer?.let {

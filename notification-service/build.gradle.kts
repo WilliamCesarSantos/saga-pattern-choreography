@@ -29,6 +29,8 @@ dependencies {
     implementation("io.awspring.cloud:spring-cloud-aws-sqs:4.0.0")
     implementation("io.awspring.cloud:spring-cloud-aws-autoconfigure:4.0.0")
 
+    implementation("tools.jackson.module:jackson-module-kotlin:3.0.4")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

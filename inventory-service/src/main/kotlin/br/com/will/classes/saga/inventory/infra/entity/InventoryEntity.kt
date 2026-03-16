@@ -11,10 +11,10 @@ data class InventoryEntity(
     val id: Long = 0,
 
     @Column(name = "product_id", nullable = false, unique = true)
-    val productId: Long,
+    val productId: Long = 0,
 
     @Column(nullable = false)
-    var quantity: Int,
+    var quantity: Int = 0,
 
     @Version
     var version: Long = 0

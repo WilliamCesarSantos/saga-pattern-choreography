@@ -23,6 +23,7 @@ class ProcessPaymentUseCase(
     override fun execute(orderDTO: OrderDTO): PaymentTransaction {
         log.info("[Payment] Processing payment for orderId=${orderDTO.orderId}")
 
+        //TODO include idempotency check here, if payment already exists for this orderId, return existing transaction instead of creating a new one.
         // Mock payment processing
         val transactionId = UUID.randomUUID().toString()
         val amount = orderDTO.total

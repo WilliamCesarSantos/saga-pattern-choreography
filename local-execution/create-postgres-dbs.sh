@@ -287,3 +287,61 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "order_service" <<-
 EOSQL
 
 echo "DML order_service applied"
+
+# DML: inventory_service
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "inventory_service" <<-EOSQL
+
+  -- 1 registro por produto (50 produtos)
+  INSERT INTO inventory (product_id, quantity, version) VALUES
+    (1,  50, 0),
+    (2,  45, 0),
+    (3,  40, 0),
+    (4,  38, 0),
+    (5,  42, 0),
+    (6, 100, 0),
+    (7,  80, 0),
+    (8,  90, 0),
+    (9,  95, 0),
+    (10, 110, 0),
+    (11,  60, 0),
+    (12,  75, 0),
+    (13,  70, 0),
+    (14,  55, 0),
+    (15,  85, 0),
+    (16,  30, 0),
+    (17,  25, 0),
+    (18,  35, 0),
+    (19,  40, 0),
+    (20,  20, 0),
+    (21,  65, 0),
+    (22,  70, 0),
+    (23,  80, 0),
+    (24,  90, 0),
+    (25,  15, 0),
+    (26, 120, 0),
+    (27,  50, 0),
+    (28,  60, 0),
+    (29,  75, 0),
+    (30,  55, 0),
+    (31, 100, 0),
+    (32,  80, 0),
+    (33,  40, 0),
+    (34,  20, 0),
+    (35,  18, 0),
+    (36,  35, 0),
+    (37,  30, 0),
+    (38,  22, 0),
+    (39,  45, 0),
+    (40,  50, 0),
+    (41,  60, 0),
+    (42,  55, 0),
+    (43,  38, 0),
+    (44,  42, 0),
+    (45,  70, 0),
+    (46,  65, 0),
+    (47,  90, 0),
+    (48,  85, 0),
+    (49, 200, 0),
+    (50, 150, 0);
+EOSQL
+echo "DML inventory_service applied"

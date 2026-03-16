@@ -3,10 +3,10 @@ package br.com.will.classes.saga.payment.infra.message
 import br.com.will.classes.saga.payment.domain.port.ProcessPayment
 import br.com.will.classes.saga.payment.domain.port.RevertPayment
 import br.com.will.classes.saga.shared.dto.OrderDTO
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.annotation.SqsListener
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import tools.jackson.databind.ObjectMapper
 
 @Component
 class PaymentListener(

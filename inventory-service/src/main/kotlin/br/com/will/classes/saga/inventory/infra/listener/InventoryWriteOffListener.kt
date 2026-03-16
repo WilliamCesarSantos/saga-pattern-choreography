@@ -4,10 +4,10 @@ import br.com.will.classes.saga.inventory.domain.exception.OutOfStockException
 import br.com.will.classes.saga.inventory.domain.port.InventoryEventPublisher
 import br.com.will.classes.saga.inventory.usecases.InventoryUseCase
 import br.com.will.classes.saga.shared.dto.OrderDTO
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.annotation.SqsListener
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import tools.jackson.databind.ObjectMapper
 
 @Component
 class InventoryWriteOffListener(

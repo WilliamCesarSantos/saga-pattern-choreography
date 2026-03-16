@@ -27,5 +27,5 @@ data class OrderDTO(
     val items: List<OrderItemDTO>,
     val customer: CustomerDTO,
     val status: String,
-    val total: BigDecimal = BigDecimal.ZERO
+    val total: BigDecimal
 )

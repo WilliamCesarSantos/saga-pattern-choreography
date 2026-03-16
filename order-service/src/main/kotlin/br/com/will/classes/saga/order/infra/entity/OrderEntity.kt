@@ -11,7 +11,7 @@ class OrderEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    var status: String,
+    var status: String = "",
 
     val createdAt: Instant? = null,
 

@@ -32,13 +32,13 @@ awslocal sqs create-queue --queue-name NOTIFICATION_SERVICE_ORDER_QUEUE
 export NOTIFICATION_ORDER_ARN=arn:aws:sqs:sa-east-1:000000000000:NOTIFICATION_SERVICE_ORDER_QUEUE
 
 echo "Subscribing queues to ORDER_ACTION topic"
-awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$ORDER_SERVICE_STATUS_ARN"
-awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$NOTIFICATION_ORDER_ARN"
-awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$PAYMENT_CHECKOUT_ARN"     --attributes '{"FilterPolicy":"{\"status\":[\"ORDER_CHECKOUT\"]}"}'
-awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$PAYMENT_REVERT_ARN"      --attributes '{"FilterPolicy":"{\"status\":[\"OUT_OF_STOCK\",\"ORDER_NOT_DELIVERED\"]}"}'
-awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$INVENTORY_WRITE_OFF_ARN" --attributes '{"FilterPolicy":"{\"status\":[\"ORDER_PAID\"]}"}'
-awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$INVENTORY_PUT_BACK_ARN"  --attributes '{"FilterPolicy":"{\"status\":[\"ORDER_NOT_DELIVERED\"]}"}'
-awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$SHIPPING_WRITE_OFF_ARN"  --attributes '{"FilterPolicy":"{\"status\":[\"INVENTORY_WRITE_OFF\"]}"}'
+awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$ORDER_SERVICE_STATUS_ARN" --attributes '{"RawMessageDelivery":"true"}'
+awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$NOTIFICATION_ORDER_ARN"   --attributes '{"RawMessageDelivery":"true"}'
+awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$PAYMENT_CHECKOUT_ARN"     --attributes '{"RawMessageDelivery":"true","FilterPolicy":"{\"status\":[\"ORDER_CHECKOUT\"]}","FilterPolicyScope":"MessageBody"}'
+awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$PAYMENT_REVERT_ARN"       --attributes '{"RawMessageDelivery":"true","FilterPolicy":"{\"status\":[\"OUT_OF_STOCK\",\"ORDER_NOT_DELIVERED\"]}","FilterPolicyScope":"MessageBody"}'
+awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$INVENTORY_WRITE_OFF_ARN"  --attributes '{"RawMessageDelivery":"true","FilterPolicy":"{\"status\":[\"ORDER_PAID\"]}","FilterPolicyScope":"MessageBody"}'
+awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$INVENTORY_PUT_BACK_ARN"   --attributes '{"RawMessageDelivery":"true","FilterPolicy":"{\"status\":[\"ORDER_NOT_DELIVERED\"]}","FilterPolicyScope":"MessageBody"}'
+awslocal sns subscribe --topic-arn "$TOPIC_ARN" --protocol sqs --notification-endpoint "$SHIPPING_WRITE_OFF_ARN"   --attributes '{"RawMessageDelivery":"true","FilterPolicy":"{\"status\":[\"INVENTORY_WRITE_OFF\"]}","FilterPolicyScope":"MessageBody"}'
 
 echo "LocalStack initialization complete."
 

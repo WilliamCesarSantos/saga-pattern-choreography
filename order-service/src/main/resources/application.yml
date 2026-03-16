@@ -7,13 +7,10 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-    hikari:
-      connection-timeout: 20000
-      maximum-pool-size: 5
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: false
     properties:
       hibernate:
@@ -22,12 +19,12 @@ spring:
 
   cloud:
     aws:
+      endpoint: http://localhost:4566
       region:
         static: sa-east-1
       credentials:
         access-key: test
         secret-key: test
-      endpoint: http://localhost:4566
 
 server:
   port: 8080
