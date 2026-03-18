@@ -1,3 +1,5 @@
+server.port: 8083
+
 spring:
   application:
     name: shipping-service
@@ -36,7 +38,4 @@ shipping-service:
   rest:
     order-service:
       base-url: http://localhost:8080
-
-server:
-  port: 8083
 

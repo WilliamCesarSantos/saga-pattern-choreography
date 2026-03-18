@@ -1,3 +1,5 @@
+server.port: 8084
+
 spring:
   application:
     name: notification-service
@@ -17,6 +19,4 @@ notification-service:
     order:
       queue-name: NOTIFICATION_SERVICE_ORDER
 
-server:
-  port: 8084
 

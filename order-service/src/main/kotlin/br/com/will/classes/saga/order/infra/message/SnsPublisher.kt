@@ -14,7 +14,6 @@ import tools.jackson.databind.ObjectMapper
 @Component
 class SnsPublisher(
     private val snsTemplate: SnsTemplate,
-    private val objectMapper: ObjectMapper,
     @Value($$"${order-service.sns.order-action.topic-arn}")
     private val topicArn: String
 ) : OrderEventPublisher {
@@ -22,8 +21,7 @@ class SnsPublisher(
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun publish(order: Order) {
-        val message = objectMapper.writeValueAsString(order.toDto())
-        snsTemplate.convertAndSend(topicArn, message)
+        snsTemplate.convertAndSend(topicArn, order.toDto())
         log.info("[Order] Published event to ORDER_ACTION — orderId=${order.id} status=${order.status}")
     }
 }

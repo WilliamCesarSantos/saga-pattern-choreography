@@ -12,17 +12,16 @@ import tools.jackson.databind.ObjectMapper
 @Component
 class InventoryWriteOffListener(
     private val inventoryUseCase: InventoryUseCase,
-    private val eventPublisher: InventoryEventPublisher,
-    private val objectMapper: ObjectMapper
+    private val eventPublisher: InventoryEventPublisher
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
     @SqsListener($$"${inventory-service.sqs.write-off.queue-name}")
-    fun listen(message: String) {
-        val orderDTO = objectMapper.readValue(message, OrderDTO::class.java)
+    fun listen(orderDTO: OrderDTO) {
         log.info("[Inventory] Received message — orderId=${orderDTO.orderId}")
         try {
+            //TODO move to usecase
             inventoryUseCase.processWriteOff(orderDTO)
             val updated = orderDTO.copy(status = "INVENTORY_WRITE_OFF")
             eventPublisher.publish(updated)

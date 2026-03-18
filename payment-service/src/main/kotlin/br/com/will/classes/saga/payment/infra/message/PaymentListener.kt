@@ -6,29 +6,23 @@ import br.com.will.classes.saga.shared.dto.OrderDTO
 import io.awspring.cloud.sqs.annotation.SqsListener
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import tools.jackson.databind.ObjectMapper
 
 @Component
 class PaymentListener(
     private val processPayment: ProcessPayment,
-    private val revertPayment: RevertPayment,
-    private val objectMapper: ObjectMapper
+    private val revertPayment: RevertPayment
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
     @SqsListener($$"${payment-service.sqs.order-checkout.queue-name}")
-    fun onOrderCheckout(message: String) {
-        log.info("[Payment] Received message from checkout queue")
-        val orderDTO = objectMapper.readValue(message, OrderDTO::class.java)
+    fun onOrderCheckout(orderDTO: OrderDTO) {
         log.info("[Payment] Processing checkout for orderId=${orderDTO.orderId}")
         processPayment.execute(orderDTO)
     }
 
     @SqsListener($$"${payment-service.sqs.payment-revert.queue-name}")
-    fun onOrderRevert(message: String) {
-        log.info("[Payment] Received message from revert queue")
-        val orderDTO = objectMapper.readValue(message, OrderDTO::class.java)
+    fun onOrderRevert(orderDTO: OrderDTO) {
         log.info("[Payment] Processing revert for orderId=${orderDTO.orderId}")
         revertPayment.execute(orderDTO)
     }
