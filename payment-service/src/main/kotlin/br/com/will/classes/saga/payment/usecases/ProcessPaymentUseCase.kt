@@ -2,10 +2,9 @@ package br.com.will.classes.saga.payment.usecases
 
 import br.com.will.classes.saga.payment.domain.model.PaymentTransaction
 import br.com.will.classes.saga.payment.domain.port.PaymentEventPublisher
+import br.com.will.classes.saga.payment.domain.port.PaymentRepositoryPort
 import br.com.will.classes.saga.payment.domain.port.ProcessPayment
-import br.com.will.classes.saga.payment.infra.entity.PaymentEntity
-import br.com.will.classes.saga.payment.infra.repository.PaymentRepository
-import br.com.will.classes.saga.shared.dto.OrderDTO
+import br.com.will.classes.saga.shared.model.Order
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,40 +12,40 @@ import java.util.UUID
 
 @Service
 class ProcessPaymentUseCase(
-    private val paymentRepository: PaymentRepository,
+    private val paymentRepositoryPort: PaymentRepositoryPort,
     private val paymentEventPublisher: PaymentEventPublisher
 ) : ProcessPayment {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Transactional
-    override fun execute(orderDTO: OrderDTO): PaymentTransaction {
-        log.info("[Payment] Processing payment for orderId=${orderDTO.orderId}")
+    override fun execute(order: Order): PaymentTransaction {
+        log.info("[Payment] Processing payment for orderId=${order.orderId}")
 
-        //TODO include idempotency check here, if payment already exists for this orderId, return existing transaction instead of creating a new one.
-        // Mock payment processing
+        val existingPayment = paymentRepositoryPort.findByOrderId(order.orderId)
+        if (existingPayment != null) {
+            log.info("[Payment] Payment already exists for orderId=${order.orderId}, returning existing transaction")
+            return existingPayment
+        }
+
         val transactionId = UUID.randomUUID().toString()
-        val amount = orderDTO.total
+        val amount = order.calculateTotal()
 
-        // TODO use case should use model, never use adapter entity.
-        val entity = PaymentEntity(
-            orderId = orderDTO.orderId,
+        val transaction = PaymentTransaction(
+            orderId = order.orderId,
             status = "ORDER_PAID",
             amount = amount,
             transactionId = transactionId
         )
-        paymentRepository.save(entity)
-        log.info("[Payment] Payment processed — transactionId=$transactionId orderId=${orderDTO.orderId}")
+        paymentRepositoryPort.save(transaction)
+        log.info("[Payment] Payment processed — transactionId=$transactionId orderId=${order.orderId}")
 
-        val updatedOrder = orderDTO.copy(status = "ORDER_PAID")
+        val updatedOrder = order.copy(status = "ORDER_PAID")
         paymentEventPublisher.publish(updatedOrder)
 
-        return PaymentTransaction(
-            orderId = orderDTO.orderId,
-            status = "ORDER_PAID",
-            amount = amount,
-            transactionId = transactionId
-        )
+        return transaction
     }
 }
+
+
 

@@ -1,8 +1,8 @@
 package br.com.will.classes.saga.inventory.domain.port
 
-import br.com.will.classes.saga.shared.dto.OrderDTO
+import br.com.will.classes.saga.shared.model.Order
 
 interface InventoryEventPublisher {
-    fun publish(orderDTO: OrderDTO)
+    fun publish(order: Order)
 }
 

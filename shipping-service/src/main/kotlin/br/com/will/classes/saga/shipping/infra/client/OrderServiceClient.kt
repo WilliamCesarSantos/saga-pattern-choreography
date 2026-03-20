@@ -1,6 +1,6 @@
 package br.com.will.classes.saga.shipping.infra.client
 
-import br.com.will.classes.saga.shared.dto.OrderDTO
+import br.com.will.classes.saga.shared.model.Order
 import br.com.will.classes.saga.shipping.domain.port.OrderServicePort
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -15,10 +15,10 @@ class OrderServiceClient(
         .baseUrl(baseUrl)
         .build()
 
-    override fun findOrderById(orderId: Long): OrderDTO? =
+    override fun findOrderById(orderId: Long): Order? =
         webClient.get()
             .uri("/orders/{orderId}", orderId)
             .retrieve()
-            .bodyToMono(OrderDTO::class.java)
+            .bodyToMono(Order::class.java)
             .block()
 }

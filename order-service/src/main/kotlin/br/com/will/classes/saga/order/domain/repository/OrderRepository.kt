@@ -1,6 +1,6 @@
 package br.com.will.classes.saga.order.domain.repository
 
-import br.com.will.classes.saga.order.domain.model.Order
+import br.com.will.classes.saga.shared.model.Order
 import java.util.Optional
 
 interface OrderRepository {

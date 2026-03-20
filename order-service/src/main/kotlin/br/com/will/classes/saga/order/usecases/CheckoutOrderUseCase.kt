@@ -2,10 +2,10 @@ package br.com.will.classes.saga.order.usecases
 
 import br.com.will.classes.saga.order.domain.exception.EmptyOrderException
 import br.com.will.classes.saga.order.domain.exception.OrderNotFound
-import br.com.will.classes.saga.order.domain.model.Order
 import br.com.will.classes.saga.order.domain.port.CheckoutOrder
 import br.com.will.classes.saga.order.domain.port.OrderEventPublisher
 import br.com.will.classes.saga.order.domain.repository.OrderRepository
+import br.com.will.classes.saga.shared.model.Order
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
@@ -28,11 +28,11 @@ class CheckoutOrderUseCase(
             throw IllegalStateException("Order $orderId cannot be checked out from status '${order.status}'. Only CREATED orders are allowed.")
         }
 
-        order.status = "ORDER_CHECKOUT"
-        orderRepository.save(order)
+        val copy = order.copy(status = "ORDER_CHECKOUT")
+        orderRepository.save(copy)
 
-        orderEventPublisher.publish(order)
-        return order
+        orderEventPublisher.publish(copy)
+        return copy
     }
 
 }

@@ -1,5 +1,6 @@
 package br.com.will.classes.saga.shipping.usecases
 
+import br.com.will.classes.saga.shared.model.Order
 import br.com.will.classes.saga.shipping.domain.port.OrderActionPublisher
 import br.com.will.classes.saga.shipping.domain.port.OrderServicePort
 import br.com.will.classes.saga.shipping.domain.model.Shipping
@@ -15,11 +16,21 @@ class ShippingService(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun createShipping(shipping: Shipping): Shipping {
+    fun createShipping(shipping: Shipping, order: Order): Shipping {
         log.info("Creating shipping for orderId={}", shipping.orderId)
-        // TODO include orderDto as parameter and change status for ORDER_DELIVERING
-        // TODO include idempotency in process
-        return shippingRepository.save(shipping)
+
+        val existing = shippingRepository.findByOrderId(shipping.orderId)
+        if (existing != null) {
+            log.info("Shipping already exists for orderId={}, skipping creation", shipping.orderId)
+            return existing
+        }
+
+        val saved = shippingRepository.save(shipping)
+
+        orderActionPublisher.publish(order.copy(status = "ORDER_DELIVERING"))
+        log.info("Published ORDER_DELIVERING for orderId={}", shipping.orderId)
+
+        return saved
     }
 
     fun confirmDelivery(trackingNumber: String, receivedBy: String): Shipping {
@@ -49,5 +60,6 @@ class ShippingService(
 
         return updated
     }
+
 }
 

@@ -1,8 +1,8 @@
 package br.com.will.classes.saga.payment.domain.port
 
-import br.com.will.classes.saga.shared.dto.OrderDTO
+import br.com.will.classes.saga.shared.model.Order
 
 interface PaymentEventPublisher {
-    fun publish(orderDTO: OrderDTO)
+    fun publish(order: Order)
 }
 

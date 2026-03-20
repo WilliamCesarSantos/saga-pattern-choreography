@@ -1,6 +1,6 @@
 package br.com.will.classes.saga.order.infra.entity
 
-import br.com.will.classes.saga.order.domain.model.OrderItem
+import br.com.will.classes.saga.shared.model.OrderItem
 import jakarta.persistence.*
 import java.math.BigDecimal
 

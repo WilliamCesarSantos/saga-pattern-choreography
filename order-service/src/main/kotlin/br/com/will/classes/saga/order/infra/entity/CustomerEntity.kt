@@ -1,6 +1,6 @@
 package br.com.will.classes.saga.order.infra.entity
 
-import br.com.will.classes.saga.order.domain.model.Customer
+import br.com.will.classes.saga.shared.model.Customer
 import jakarta.persistence.*
 
 @Entity

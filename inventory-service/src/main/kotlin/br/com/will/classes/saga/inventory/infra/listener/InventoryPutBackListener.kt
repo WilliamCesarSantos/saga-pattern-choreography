@@ -7,17 +7,16 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
-class InventoryWriteOffListener(
+class InventoryPutBackListener(
     private val inventoryUseCase: InventoryUseCase
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @SqsListener($$"${inventory-service.sqs.write-off.queue-name}")
+    @SqsListener($$"${inventory-service.sqs.put-back.queue-name}")
     fun listen(order: Order) {
-        log.info("[Inventory] Received write-off message — orderId=${order.orderId}")
-        inventoryUseCase.processWriteOff(order)
+        log.info("[Inventory] Received put-back message — orderId=${order.orderId}")
+        inventoryUseCase.revertWriteOff(order)
     }
-
 }
 

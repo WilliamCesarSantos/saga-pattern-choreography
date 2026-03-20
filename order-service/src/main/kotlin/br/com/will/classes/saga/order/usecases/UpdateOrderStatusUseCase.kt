@@ -1,18 +1,17 @@
 package br.com.will.classes.saga.order.usecases
 
 import br.com.will.classes.saga.order.domain.exception.OrderNotFound
-import br.com.will.classes.saga.order.domain.model.Order
 import br.com.will.classes.saga.order.domain.port.OrderEventPublisher
 import br.com.will.classes.saga.order.domain.port.UpdateStatusOrder
 import br.com.will.classes.saga.order.domain.repository.OrderRepository
+import br.com.will.classes.saga.shared.model.Order
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class UpdateOrderStatusUseCase(
-    private val orderRepository: OrderRepository,
-    private val orderEventPublisher: OrderEventPublisher
+    private val orderRepository: OrderRepository
 ) : UpdateStatusOrder {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -29,14 +28,14 @@ class UpdateOrderStatusUseCase(
         }
 
         if (previousStatus == resolvedStatus) {
-            log.info("Order ${order.id} already at status=$resolvedStatus — skipping update and publish")
+            log.info("Order ${order.orderId} already at status=$resolvedStatus — skipping update and publish")
             return order
         }
 
-        order.status = resolvedStatus
-        orderRepository.save(order)
-        log.info("Order ${order.id} updated from $previousStatus to $resolvedStatus")
+        val copy = order.copy(status = resolvedStatus)
+        orderRepository.save(copy)
+        log.info("Order ${copy.orderId} updated from $previousStatus to $resolvedStatus")
 
-        return order
+        return copy
     }
 }

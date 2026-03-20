@@ -9,6 +9,7 @@ import java.time.LocalDateTime
 
 interface ShippingJpaRepository : JpaRepository<ShippingEntity, Long> {
     fun findByTrackingNumber(trackingNumber: String): ShippingEntity?
+    fun findByOrderId(orderId: Long): ShippingEntity?
 }
 
 @Repository
@@ -19,6 +20,9 @@ class ShippingRepository(private val jpaRepository: ShippingJpaRepository) {
 
     fun findByTrackingNumber(trackingNumber: String): Shipping? =
         jpaRepository.findByTrackingNumber(trackingNumber)?.toDomain()
+
+    fun findByOrderId(orderId: Long): Shipping? =
+        jpaRepository.findByOrderId(orderId)?.toDomain()
 
     fun updateDelivered(shipping: Shipping, receivedBy: String): Shipping {
         val updated = ShippingEntity(

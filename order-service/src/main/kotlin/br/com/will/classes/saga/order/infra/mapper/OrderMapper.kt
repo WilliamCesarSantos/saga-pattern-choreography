@@ -1,39 +1,37 @@
 package br.com.will.classes.saga.order.infra.mapper
 
-import br.com.will.classes.saga.order.domain.model.Order
-import br.com.will.classes.saga.shared.dto.CustomerDTO
-import br.com.will.classes.saga.shared.dto.OrderDTO
-import br.com.will.classes.saga.shared.dto.OrderItemDTO
-import br.com.will.classes.saga.shared.dto.ProductDTO
+import br.com.will.classes.saga.shared.model.Customer
+import br.com.will.classes.saga.shared.model.Order
+import br.com.will.classes.saga.shared.model.OrderItem
+import br.com.will.classes.saga.shared.model.Product
 import java.time.Instant
 
 object OrderMapper {
 
-    fun toDto(order: Order): OrderDTO {
+    fun toDto(order: Order): Order {
         val items = order.items.map { item ->
-            OrderItemDTO(
+            OrderItem(
                 id = item.id,
                 quantity = item.quantity,
                 price = item.price,
-                product = ProductDTO(
+                product = Product(
                     id = item.product.id,
                     description = item.product.description
                 )
             )
         }
-        val customerDto = order.customer?.let {
-            CustomerDTO(id = it.id, name = it.name, email = it.email)
-        } ?: CustomerDTO(id = 0L, name = "unknown", email = "unknown")
+        val customer = order.customer.let {
+            Customer(id = it.id, name = it.name, email = it.email)
+        }
 
-        return OrderDTO(
-            orderId = order.id,
+        return Order(
+            orderId = order.orderId,
             createdAt = order.createdAt ?: Instant.now(),
             items = items,
-            customer = customerDto,
-            status = order.status,
-            total = order.calculateTotal()
+            customer = customer,
+            status = order.status
         )
     }
 }
 
-fun Order.toDto(): OrderDTO = OrderMapper.toDto(this)
+fun Order.toDto(): Order = OrderMapper.toDto(this)

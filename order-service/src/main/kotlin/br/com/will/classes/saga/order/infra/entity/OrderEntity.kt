@@ -1,6 +1,6 @@
 package br.com.will.classes.saga.order.infra.entity
 
-import br.com.will.classes.saga.order.domain.model.Order
+import br.com.will.classes.saga.shared.model.Order
 import jakarta.persistence.*
 import java.time.Instant
 
@@ -25,19 +25,19 @@ class OrderEntity(
 
     fun toDomain(): Order {
         val order = Order(
-            id = id,
+            orderId = id,
             status = status,
-            createdAt = createdAt,
-            customer = customer?.toDomain()
+            createdAt = createdAt ?: Instant.now(),
+            items = items.map { it.toDomain() }.toList(),
+            customer = customer!!.toDomain()
         )
-        order.items = items.map { it.toDomain() }.toMutableList()
         return order
     }
 
     companion object {
         fun fromDomain(order: Order, customerEntity: CustomerEntity?): OrderEntity {
             return OrderEntity(
-                id = order.id,
+                id = order.orderId,
                 status = order.status,
                 createdAt = order.createdAt,
                 customer = customerEntity

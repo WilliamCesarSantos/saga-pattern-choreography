@@ -1,8 +1,8 @@
 package br.com.will.classes.saga.shipping.domain.port
 
-import br.com.will.classes.saga.shared.dto.OrderDTO
+import br.com.will.classes.saga.shared.model.Order
 
 interface OrderActionPublisher {
-    fun publish(orderDTO: OrderDTO)
+    fun publish(order: Order)
 }
 
