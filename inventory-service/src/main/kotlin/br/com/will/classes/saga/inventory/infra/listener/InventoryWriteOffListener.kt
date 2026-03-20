@@ -32,5 +32,7 @@ class InventoryWriteOffListener(
             eventPublisher.publish(updated)
         }
     }
+
+    // TODO incluir fila para reverter o estoque caso o pedido não seja entregue. Nome da fila: INVENTORY_SERVICE_INVENTORY_WRITE_OFF_QUEUE
 }
 

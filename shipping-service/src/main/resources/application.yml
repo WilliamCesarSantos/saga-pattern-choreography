@@ -31,7 +31,7 @@ spring:
 shipping-service:
   sqs:
     inventory-write-off:
-      queue-name: SHIPPING_SERVICE_INVENTORY_WRITE_OFF
+      queue-name: SHIPPING_SERVICE_INVENTORY_WRITE_OFF_QUEUE
   sns:
     order-action:
       topic-arn: arn:aws:sns:sa-east-1:000000000000:ORDER_ACTION

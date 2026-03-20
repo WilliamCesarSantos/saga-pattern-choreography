@@ -17,6 +17,8 @@ class ShippingService(
 
     fun createShipping(shipping: Shipping): Shipping {
         log.info("Creating shipping for orderId={}", shipping.orderId)
+        // TODO include orderDto as parameter and change status for ORDER_DELIVERING
+        // TODO include idempotency in process
         return shippingRepository.save(shipping)
     }
 

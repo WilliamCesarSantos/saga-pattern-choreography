@@ -37,8 +37,6 @@ class UpdateOrderStatusUseCase(
         orderRepository.save(order)
         log.info("Order ${order.id} updated from $previousStatus to $resolvedStatus")
 
-        orderEventPublisher.publish(order)
-        log.info("Published ORDER_ACTION for order=${order.id} status=$resolvedStatus")
         return order
     }
 }

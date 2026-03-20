@@ -17,6 +17,6 @@ spring:
 notification-service:
   sqs:
     order:
-      queue-name: NOTIFICATION_SERVICE_ORDER
+      queue-name: NOTIFICATION_SERVICE_ORDER_QUEUE
 
 
