@@ -1,60 +1,60 @@
 # Saga Pattern — Choreography
 
-Exemplo prático de **Saga Pattern Coreografado** aplicado a um fluxo de pedidos (e-commerce), utilizando **Kotlin**, **Spring Boot 4**, **AWS SNS/SQS** e arquitetura **Clean Architecture**.
+A practical example of the **Choreography-based Saga Pattern** applied to an order flow (e-commerce), using **Kotlin**, **Spring Boot 4**, **AWS SNS/SQS**, and **Clean Architecture**.
 
 ---
 
-## O que é o Saga Pattern?
+## What is the Saga Pattern?
 
-O **Saga Pattern** é uma estratégia para gerenciar transações distribuídas em arquiteturas de microsserviços. Como cada serviço possui seu próprio banco de dados, não é possível usar uma transação ACID única que abranja múltiplos serviços. O Saga resolve isso quebrando a transação em uma **sequência de transações locais**, onde cada etapa publica um evento que aciona a próxima.
+The **Saga Pattern** is a strategy for managing distributed transactions in microservices architectures. Since each service has its own database, it is not possible to use a single ACID transaction spanning multiple services. Saga solves this by breaking the transaction into a **sequence of local transactions**, where each step publishes an event that triggers the next one.
 
-### Por que o Saga Pattern é útil?
+### Why is the Saga Pattern useful?
 
-| Problema | Solução com Saga |
+| Problem | Solution with Saga |
 |---|---|
-| Transações distribuídas impossíveis com múltiplos bancos | Cada serviço executa sua transação local e emite um evento |
-| Falha parcial deixa o sistema em estado inconsistente | Transações compensatórias revertem o que foi feito |
-| Acoplamento forte entre serviços | Serviços se comunicam apenas via eventos, sem chamadas diretas |
-| Dificuldade de escalar operações críticas | Cada serviço escala de forma independente |
+| Distributed transactions are impossible with multiple databases | Each service executes its local transaction and emits an event |
+| Partial failure leaves the system in an inconsistent state | Compensating transactions revert what was done |
+| Strong coupling between services | Services communicate only via events, without direct calls |
+| Difficulty scaling critical operations | Each service scales independently |
 
-### Orquestração vs. Coreografia
+### Orchestration vs. Choreography
 
-Este projeto implementa a abordagem de **Coreografia**: não existe um coordenador central. Cada serviço conhece apenas seu papel e reage aos eventos que recebe, publicando novos eventos em seguida. O fluxo emerge da colaboração entre os serviços.
+This project implements the **Choreography** approach: there is no central coordinator. Each service only knows its own role and reacts to the events it receives, publishing new events in return. The flow emerges from the collaboration between services.
 
 ---
 
-## Visão Geral do Projeto
+## Project Overview
 
 ```
 saga-pattern-choreography/
-├── shared/               # DTOs e modelos compartilhados entre os serviços
-├── order-service/        # Gerencia pedidos e inicia o fluxo (porta 8080)
-├── payment-service/      # Processa e reverte pagamentos (porta 8081)
-├── inventory-service/    # Controla estoque e realiza baixas (porta 8082)
-├── shipping-service/     # Gerencia entregas (porta 8083)
-├── notification-service/ # Envia notificações ao cliente (porta 8084)
-└── local-execution/      # Docker Compose + scripts de inicialização
+├── shared/               # DTOs and models shared across services
+├── order-service/        # Manages orders and starts the flow (port 8080)
+├── payment-service/      # Processes and reverts payments (port 8081)
+├── inventory-service/    # Controls stock and performs write-offs (port 8082)
+├── shipping-service/     # Manages deliveries (port 8083)
+├── notification-service/ # Sends notifications to the customer (port 8084)
+└── local-execution/      # Docker Compose + initialization scripts
 ```
 
 ### Stack
 
-- **Linguagem:** Kotlin 2.3
+- **Language:** Kotlin 2.3
 - **Framework:** Spring Boot 4.0
-- **Mensageria:** AWS SNS (tópico fan-out) + AWS SQS (filas por serviço)
-- **Banco de dados:** PostgreSQL 16 (banco separado por serviço)
-- **Infraestrutura local:** LocalStack 4 (emula SNS/SQS da AWS)
-- **Build:** Gradle (multi-módulo)
+- **Messaging:** AWS SNS (fan-out topic) + AWS SQS (per-service queues)
+- **Database:** PostgreSQL 16 (separate database per service)
+- **Local infrastructure:** LocalStack 4 (emulates AWS SNS/SQS)
+- **Build:** Gradle (multi-module)
 
 ---
 
-## Fluxo da Saga
+## Saga Flow
 
-O fluxo é iniciado com a chamada ao endpoint de checkout de um pedido. A partir daí, os serviços se comunicam exclusivamente por eventos via SNS/SQS.
+The flow is initiated by calling the checkout endpoint for an order. From that point on, services communicate exclusively through events via SNS/SQS.
 
-### Caminho feliz ✅
+### Happy path ✅
 
 ```
-Cliente
+Client
   │
   ▼
 POST /orders/{id}/checkout
@@ -63,53 +63,53 @@ POST /orders/{id}/checkout
 [order-service] ──────────────────────────────────────────────► SNS: ORDER_ACTION
                                                                         │
                          ┌──────────────────────────────────────────────┤
-                         │ filter: ORDER_CHECKOUT                       │ (todos os status)
+                         │ filter: ORDER_CHECKOUT                       │ (all statuses)
                          ▼                                              ▼
                [payment-service]                              [notification-service]
-               Processa pagamento                              Notifica cliente por e-mail
+               Processes payment                              Notifies customer by e-mail
                status: ORDER_PAID
                          │
                          ▼ SNS: ORDER_ACTION
                          │ filter: ORDER_PAID
                          ▼
                [inventory-service]
-               Baixa no estoque
+               Stock write-off
                status: INVENTORY_WRITE_OFF
                          │
                          ▼ SNS: ORDER_ACTION
                          │ filter: INVENTORY_WRITE_OFF
                          ▼
                [shipping-service]
-               Cria envio + rastreio
+               Creates shipment + tracking number
                status: ORDER_DELIVERING
                          │
-                         ▼ (intervenção manual via API)
+                         ▼ (manual intervention via API)
 PUT /shippings/{tracking}/delivery { success: true }
                          │
                [shipping-service]
-               Confirma entrega
+               Confirms delivery
                status: ORDER_DELIVERED
 ```
 
-### Caminhos de compensação ↩️
+### Compensation paths ↩️
 
-**Sem estoque:**
+**Out of stock:**
 ```
 [inventory-service] → OUT_OF_STOCK
-  └─► [payment-service] reverte pagamento → ORDER_PAID_REVERSED
+  └─► [payment-service] reverts payment → ORDER_PAID_REVERSED
 ```
 
-**Entrega falhou:**
+**Delivery failed:**
 ```
 PUT /shippings/{tracking}/delivery { success: false }
   └─► [shipping-service] → ORDER_NOT_DELIVERED
-        ├─► [payment-service] reverte pagamento → ORDER_PAID_REVERSED
-        └─► [inventory-service] devolve itens ao estoque
+        ├─► [payment-service] reverts payment → ORDER_PAID_REVERSED
+        └─► [inventory-service] returns items to stock
 ```
 
-### Mapa de eventos e filas
+### Events and queues map
 
-| Evento publicado | Tópico | Fila consumidora | Serviço consumidor |
+| Published event | Topic | Consumer queue | Consumer service |
 |---|---|---|---|
 | `ORDER_CHECKOUT` | `ORDER_ACTION` | `PAYMENT_SERVICE_ORDER_CHECKOUT_QUEUE` | payment-service |
 | `ORDER_PAID` | `ORDER_ACTION` | `INVENTORY_SERVICE_INVENTORY_WRITE_OFF_QUEUE` | inventory-service |
@@ -117,31 +117,31 @@ PUT /shippings/{tracking}/delivery { success: false }
 | `OUT_OF_STOCK` | `ORDER_ACTION` | `PAYMENT_SERVICE_PAYMENT_REVERT_QUEUE` | payment-service |
 | `ORDER_NOT_DELIVERED` | `ORDER_ACTION` | `PAYMENT_SERVICE_PAYMENT_REVERT_QUEUE` | payment-service |
 | `ORDER_NOT_DELIVERED` | `ORDER_ACTION` | `INVENTORY_SERVICE_PUT_BACK_QUEUE` | inventory-service |
-| `*` (todos) | `ORDER_ACTION` | `ORDER_SERVICE_STATUS_QUEUE` | order-service |
-| `*` (todos) | `ORDER_ACTION` | `NOTIFICATION_SERVICE_ORDER_QUEUE` | notification-service |
+| `*` (all) | `ORDER_ACTION` | `ORDER_SERVICE_STATUS_QUEUE` | order-service |
+| `*` (all) | `ORDER_ACTION` | `NOTIFICATION_SERVICE_ORDER_QUEUE` | notification-service |
 
 ---
 
-## Pré-requisitos
+## Prerequisites
 
 - **Java 21+**
-- **Docker** e **Docker Compose**
-- **Gradle** (ou use o wrapper `./gradlew`)
+- **Docker** and **Docker Compose**
+- **Gradle** (or use the wrapper `./gradlew`)
 
 ---
 
-## Como executar
+## How to run
 
-### 1. Subir a infraestrutura (PostgreSQL + LocalStack)
+### 1. Start the infrastructure (PostgreSQL + LocalStack)
 
 ```bash
 cd local-execution
 docker compose up -d
 ```
 
-Aguarde alguns segundos. O LocalStack criará automaticamente o tópico SNS, as filas SQS e todas as assinaturas com filtros via o script `localstack-init.sh`.
+Wait a few seconds. LocalStack will automatically create the SNS topic, SQS queues, and all subscriptions with filters via the `localstack-init.sh` script.
 
-Para verificar que as filas foram criadas:
+To verify that the queues were created:
 
 ```bash
 aws --endpoint-url=http://localhost:4566 \
@@ -150,80 +150,80 @@ aws --endpoint-url=http://localhost:4566 \
     sqs list-queues
 ```
 
-### 2. Compilar todos os módulos
+### 2. Build all modules
 
-Na raiz do projeto:
+From the project root:
 
 ```bash
 ./gradlew build -x test
 ```
 
-### 3. Iniciar os serviços
+### 3. Start the services
 
-Cada serviço é um módulo Gradle independente. Abra um terminal para cada um:
+Each service is an independent Gradle module. Open a terminal for each one:
 
 ```bash
-# Terminal 1 — order-service (porta 8080)
+# Terminal 1 — order-service (port 8080)
 ./gradlew :order-service:bootRun
 
-# Terminal 2 — payment-service (porta 8081)
+# Terminal 2 — payment-service (port 8081)
 ./gradlew :payment-service:bootRun
 
-# Terminal 3 — inventory-service (porta 8082)
+# Terminal 3 — inventory-service (port 8082)
 ./gradlew :inventory-service:bootRun
 
-# Terminal 4 — shipping-service (porta 8083)
+# Terminal 4 — shipping-service (port 8083)
 ./gradlew :shipping-service:bootRun
 
-# Terminal 5 — notification-service (porta 8084)
+# Terminal 5 — notification-service (port 8084)
 ./gradlew :notification-service:bootRun
 ```
 
 ---
 
-## Testando o fluxo completo
+## Testing the full flow
 
-O banco já é populado com dados de exemplo (customers, products, orders) via script de inicialização do PostgreSQL.
+The database is pre-populated with sample data (customers, products, orders) via the PostgreSQL initialization script.
 
-### Passo 1 — Iniciar o checkout de um pedido
+### Step 1 — Start the checkout of an order
 
 ```bash
 curl -s -X POST http://localhost:8080/orders/1/checkout | jq
 ```
 
-A partir deste momento, acompanhe os logs de cada serviço para observar o fluxo da saga se desenrolando automaticamente via eventos.
+From this point on, follow the logs of each service to observe the saga flow unfolding automatically via events.
 
-### Passo 2 — Consultar o status do pedido
+### Step 2 — Check the order status
 
 ```bash
 curl -s http://localhost:8080/orders/1 | jq
 ```
 
-### Passo 3 — Confirmar entrega (sucesso)
+### Step 3 — Confirm delivery (success)
 
-Obtenha o `trackingNumber` nos logs do `shipping-service` e execute:
-
-```bash
-curl -s -X PUT http://localhost:8083/shippings/{trackingNumber}/delivery \
-  -H "Content-Type: application/json" \
-  -d '{"success": true, "receivedBy": "João Silva"}' | jq
-```
-
-### Passo 3 (alternativo) — Registrar falha na entrega
+Get the `trackingNumber` from the `shipping-service` logs and run:
 
 ```bash
 curl -s -X PUT http://localhost:8083/shippings/{trackingNumber}/delivery \
   -H "Content-Type: application/json" \
-  -d '{"success": false, "failureReason": "Endereço não encontrado"}' | jq
+  -d '{"success": true, "receivedBy": "John Smith"}' | jq
 ```
 
-Ao registrar falha, a saga inicia as **transações compensatórias**: o pagamento é revertido e o estoque é reposto automaticamente.
+### Step 3 (alternative) — Register a delivery failure
+
+```bash
+curl -s -X PUT http://localhost:8083/shippings/{trackingNumber}/delivery \
+  -H "Content-Type: application/json" \
+  -d '{"success": false, "failureReason": "Address not found"}' | jq
+```
+
+When a failure is registered, the saga initiates **compensating transactions**: the payment is reverted and the stock is automatically restocked.
 
 ---
 
-## Portas dos serviços
+## Service ports
 
-| Serviço | Porta |
+| Service | Port |
 |---|---|
 | order-service | `8080` |
 | payment-service | `8081` |
@@ -235,16 +235,15 @@ Ao registrar falha, a saga inicia as **transações compensatórias**: o pagamen
 
 ---
 
-## Parar o ambiente
+## Stopping the environment
 
 ```bash
 cd local-execution
 docker compose down
 ```
 
-Para remover também os volumes (banco e filas):
+To also remove the volumes (database and queues):
 
 ```bash
 docker compose down -v
 ```
-
